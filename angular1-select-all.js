@@ -149,7 +149,7 @@
                                 scope.mgCbSelectedCount = getSelectedCount();
 
                                 // 'Select All' is checked when the checked count is same as the total members count.
-                                modelValue = scope.mgCbSelectedCount === scope.mgCbSelectAll.length;
+                                modelValue = scope.mgCbSelectAll.length ? scope.mgCbSelectedCount === scope.mgCbSelectAll.length : false;
 
                                 // Reset the mgCbSelectAll ng-model value to boolean from Object.
                                 // http://stackoverflow.com/a/31827383/340290

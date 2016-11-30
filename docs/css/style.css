@@ -1,0 +1,111 @@
+html, body { height: 100%; }
+body {
+	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+}
+
+.container {
+    padding: 20px 15px;
+}
+
+h4 {
+    margin-top: 30px;
+}
+
+pre {
+    border: none;
+    font-size: .85em;
+}
+
+code {
+    color: #2196f3;
+    background-color: #edf7ff;
+}
+
+ul.list-styled {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 1.5em;
+}
+
+ul.list-styled > li {
+  padding-left: .5em;
+  text-indent: -.5em;
+}
+
+ul.list-styled > li:before {
+  padding-right: 5px;
+  margin-left: -10px;
+}
+
+ul.list-style-check > li:before {
+  content: "✔️";
+}
+
+ul.list-style-arrow > li:before {
+  content: "➡️";
+}
+
+input.form-control {
+    /*padding: 5px 10px;*/
+    margin: 10px auto;
+}
+
+.btn {
+    -webkit-box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    text-transform: none;
+}
+
+.btn-default:hover, .btn-default:active:hover {
+    background-color: #fbfbfb;
+}
+
+.close {
+    color: #e51c23;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 28px;
+    opacity: 1;
+}
+
+.label {
+    font-size: 12px;
+    font-weight: normal;
+    padding: 2px 4px;
+}
+
+.details-box {
+    min-height: 300px;
+}
+
+.hr-line {
+  display: flex;
+}
+.hr-line:before,
+.hr-line:after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px inset;
+  margin: auto 0.25em;
+}
+.notes-small {
+    font-size: .9em;
+}
+
+
+.example-code:hover .hightlight {
+    background: yellow;    
+}
+
+
+.github-corner:hover .octo-arm {
+    animation: octocat-wave 560ms ease-in-out
+}
+@keyframes octocat-wave {
+    0%, 100% { transform: rotate(0) } 20%, 60% { transform: rotate(-25deg) } 40%, 80% { transform: rotate(10deg) }
+}
+@media (max-width:500px) {
+    .github-corner:hover .octo-arm { animation: none }
+    .github-corner .octo-arm { animation: octocat-wave 560ms ease-in-out }
+}

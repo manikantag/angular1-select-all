@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="DemoApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AngularJS 1.x directives for 'Select All' checkbox solution</title>
+    <link href="docs/css/bootstrap.min.css" rel="stylesheet">
+    <link href="docs/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="jumbotron text-center">
+            <h1>mg-select-all</h1>
+            <p class="small">Set of AngularJS 1.x directives for 'Select All' checkbox solution.
+                <span class="small text-muted">All your checkbox belong to me!</span>
+            </p>
+
+            <p>
+                <a href="https://github.com/manikantag/angular1-select-all/archive/master.zip" class="btn btn-primary">Download</a>
+                <a href="#docs" class="btn btn-primary">Docs</a>
+                <a href="#demo" class="btn btn-success">Demo</a>
+                <a href="https://github.com/manikantag/angular1-select-all" class="btn btn-default">Source</a>
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12" id="why">
+                <h4>But why❓</h4>
+                <p>I've written the similar code several times and each time I ended up with better solution. But all those times I've used enough watchers (yeah, <code>$scope.$watch(...)</code>). And once the dataset grows, all those watchers made the page slugish. Besides, I wanted to see if we can leverage the <code>ng-model</code> controller to do all the logic. I wanted a dataset size agnostic solution and here is my such a trail 🚀</p>
+                <p><em>I've added <a href="https://kentcdodds.github.io/ng-stats/">ng-stats</a> widget to this page, so that I can keep an eye on digest cycles & their length </em></p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-sm-12" id="features">
+                <h4>In the bag</h4>
+                <ul class="list-styled list-style-check">
+                    <li>Selecting 'Select All' will select all member checkbox. Unselection too 😃</li>
+                    <li>Selecting all member checkbox manually will select 'Select All' checkbox. Yeah, unselection too.</li>
+                    <li>Adding new unselected checkbox will de-select the 'Select All' checkbox, even if it is selected. Adding new selected checkbox will work likewise.</li>
+                    <li>Useful values will be updated in the given scope property.</li>
+                    <li>'Select All' can be controlled externally, say, from controller. Try 'Toggle Select All' in below demo.</li>
+                    <li>Adding &amp; removing member checkbox will select/de-selects the 'Select All'.</li>
+                    <li>Can be used with multiple elements in the same page. And <code>ng-repeat</code> can be used with <code>$filter</code> to render the member checkbox.</li>
+                    <li>Most importantly, all the above features with minimal watchers &amp; digest cycle length possible. This module needs only 5 more watchers for any dataset size 👍</li>
+                </ul>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-sm-12" id="install">
+                <h4>Just get it!</h4>
+                You can install this directive via <strong>npm</strong>
+                <pre><code class="text-primary">npm install --save angular1-select-all</code></pre>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-sm-12" id="docs">
+                <h4>Using it <small>is as simple as 4+1</small></h4>
+                <p>Include the <strong>angular1-select-all.js</strong> script, and add <code>angular1-select-all</code> module as a dependency to your Angular module.
+                    <pre><code class="text-primary">angular.module('AppModule', [<strong>'angular1-select-all'</strong>])</code></pre>
+                </p>
+                <br/>
+                <p>
+                    This module has a total of <strong>4</strong> directives and <strong>1</strong> value service.
+                    <ul class="list-styled list-style-arrow">
+                        <li><code>mg-cb-group</code> directive
+                            <p>Acts like a container directive. Use this on the parent element of all the other directives. Basically, all the other 3 directives requires this directives controller.
+                            </p>
+                        </li>
+                        <li><code>mg-cb-select-all</code> directive
+                            <p>Core directive where all the work is done. Use this on the 'Select All' checkbox, along with
+                                <code>ng-model</code>.<br/> Attributes:
+                                <br/>
+                                <strong>mg-cb-select-all</strong>: Collection used for member checkbox (ex: ng-repeat Collection).<br/>
+                                <strong>mg-cb-selected-count</strong>: Some scope property, whose value will be updated by this directive, with the number of selected member checkboxes.
+                            </p>
+                        </li>
+                        <li><code>mg-cb-member</code> directive
+                            <p>Use this directive on each member checkbox, along with <code>ng-model</code>.
+                            </p>
+                        </li>
+                        <li><code>mg-cb-clear</code> directive
+                            <p>Use this directive on button or anchor link to clear all the checkboxes. Pass the same collection which is given for <strong>mg-cb-select-all</strong> directive.<br/>
+                            </p>
+                        </li>
+                        <li><code>mgCbSelectAllConfig</code> value service
+                            <p>Useful to configure the scope property of each checkbox model. Default is <code>'__selected'</code>. Customising it is simple.
+                                <pre>
+angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig', { memberModelKey: '_checked' })</pre>
+                            </p>
+                        </li>
+                    </ul>
+                </p>
+                <br/>
+                <p>
+                    <h5>Example code <small>(Play with this <a href="https://plnkr.co/edit/oJojoPBVmxGROO43QteF?p=preview" target="_blank">Plunker</a> to learn better)</small></h5>
+
+                    <!-- Syntax highlithing by http://markup.su/highlighter/, Style: Active4D -->
+                    <pre class="example-code" ng-non-bindable><span style="color:#7a7a7a">&lt;<span style="color:#016cff">div</span> <span style="color:#963dff"><strong class="hightlight">mg-cb-group</strong></span>></span>
+    <span style="color:#7a7a7a">&lt;<span style="color:#016cff">div</span>></span>
+        Selected count: {{ctrl.totalSelected}}<span style="color:#7a7a7a">&lt;<span style="color:#016cff">br</span>/></span> 
+        Is All selected: {{ctrl.selectAll}}
+        <span style="color:#7a7a7a">&lt;<span style="color:#016cff">button</span> <span style="color:#963dff">type</span>=<span style="color:#666">"button"</span> <span style="color:#963dff"><strong class="hightlight">mg-cb-clear</strong></span>=<span style="color:#666">"ctrl.persons"</span>></span>Clear All<span style="color:#7a7a7a">&lt;/<span style="color:#016cff">button</span>></span>
+    <span style="color:#7a7a7a">&lt;/<span style="color:#016cff">div</span>></span>
+    <span style="color:#7a7a7a">&lt;<span style="color:#016cff">div</span>></span>
+        <span style="color:#7a7a7a">&lt;<span style="color:#016cff">label</span>></span><span style="color:#7a7a7a">&lt;<span style="color:#016cff">input</span> <span style="color:#963dff">type</span>=<span style="color:#666">"checkbox"</span> 
+                <span style="color:#963dff">ng-model</span>=<span style="color:#666">"ctrl.selectAll"</span> 
+                <span style="color:#963dff"><strong class="hightlight">mg-cb-select-all</strong></span>=<span style="color:#666">"ctrl.persons"</span> 
+                <span style="color:#963dff">mg-cb-selected-count</span>=<span style="color:#666">"ctrl.totalSelected"</span>></span> Select All<span style="color:#7a7a7a">&lt;/<span style="color:#016cff">label</span>></span>
+        <span style="color:#7a7a7a">&lt;<span style="color:#016cff">p</span> <span style="color:#963dff">ng-repeat</span>=<span style="color:#666">"person in ctrl.persons"</span>></span>
+            <span style="color:#7a7a7a">&lt;<span style="color:#016cff">label</span>></span><span style="color:#7a7a7a">&lt;<span style="color:#016cff">input</span> <span style="color:#963dff">type</span>=<span style="color:#666">"checkbox"</span> <span style="color:#963dff">ng-model</span>=<span style="color:#666">"person.__selected"</span> <span style="color:#963dff"><strong class="hightlight">mg-cb-member</strong></span>></span> {{::person.name}}<span style="color:#7a7a7a">&lt;/<span style="color:#016cff">label</span>></span>
+        <span style="color:#7a7a7a">&lt;/<span style="color:#016cff">p</span>></span>
+    <span style="color:#7a7a7a">&lt;/<span style="color:#016cff">div</span>></span>
+<span style="color:#7a7a7a">&lt;/<span style="color:#016cff">div</span>></span>
+</pre>
+
+                    <!-- Original code -->
+                    <!--
+<div mg-cb-group>
+    <div>
+        Selected count: {{ctrl.totalSelected}}<br/> 
+        Is All selected: {{ctrl.selectAll}}
+        <button type="button" mg-cb-clear="ctrl.persons">Clear All</button>
+    </div>
+    <div>
+        <label><input type="checkbox" 
+                ng-model="ctrl.selectAll" 
+                mg-cb-select-all="ctrl.persons" 
+                mg-cb-selected-count="ctrl.selectedCount">Select All</label>
+        <p ng-repeat="person in ctrl.persons">
+            <label><input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}}</label>
+        </p>
+    </div>
+</div>
+                    -->
+
+
+                </p>
+
+                <p class="notes-small">🙋 <em>Seriously? 4+1? Can't this be done with just 1 directive?<br/>Yeah, previously I've one such directive but
+                    uses so many watchers. And if you know a better way with 1 directive and still with few watchers, please
+                    open a issue. I m interested all the way!</em></p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row" ng-controller="DemoCtrl as demoCtrl">
+            <div class="col-sm-12" id="demo">
+                <h4>See it in work <small>(<a href="https://plnkr.co/edit/oJojoPBVmxGROO43QteF?p=preview" target="_blank">Plunker</a> to play with)</small></h4>
+                <small><em>Note: Directives usage is marked like <span class="label label-default">this</span></em></small>
+
+                <div class="row">
+                    <div mg-cb-group class="col-md-6">
+                        <div class="hr-line">Simple example</div>
+                        <span class="label label-default label-sm">mg-cb-group</span>
+                        <p class="result">
+                            Selected count: {{demoCtrl.cb1.totalSelected}}
+                            <br/> Is All selected: {{demoCtrl.cb1.selectAll}}
+                        </p>
+                        <div class="form-group">
+                            <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons1, false)" class="btn btn-sm btn-primary">Add New Unselected</button>
+                            <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons1, true)" class="btn btn-sm btn-primary">Add New Selected</button>
+                            <button type="button" ng-click="demoCtrl.cb1.selectAll=!demoCtrl.cb1.selectAll" class="btn btn-sm btn-primary">Toggle 'Select All'</button>
+                            <button type="button" mg-cb-clear="demoCtrl.persons1" class="btn btn-sm btn-primary">Clear All <span class="label label-default label-sm">mg-cb-clear</span></button>
+                            <button type="button" ng-click="hide1=true" class="btn btn-sm btn-danger">Destroy scope</button>
+
+                            <input type="search" ng-model="filterBy1.name" placeholder="Filter to select only few" class="form-control">
+                        </div>
+                        <div class="details-box">
+                            <label><input type="checkbox" ng-if="!hide1" ng-model="demoCtrl.cb1.selectAll" mg-cb-select-all="filteredPersons1" mg-cb-selected-count="demoCtrl.cb1.totalSelected" > <strong>Select All</strong> <span class="label label-default label-sm">mg-cb-select-all</span></label>
+                            <p ng-repeat="person in demoCtrl.persons1 | filter:filterBy1 as filteredPersons1">
+                                <label>
+                <input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}} <span class="label label-default label-sm">mg-cb-member</span> &nbsp;
+                <button ng-click="demoCtrl.remove(demoCtrl.persons1, $index)" title="Remove this person" class="close"><span>&times;</span></button>
+                 <span class="result hidden">{{person}}</span> 
+            </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                    </div>
+
+                    <div mg-cb-group class="col-md-6">
+                        <div class="hr-line">Big dataset example (inspect page source to know how big!)</div>
+                        <span class="label label-default label-sm">mg-cb-group</span>
+                        <p class="result">
+                            Selected count: {{demoCtrl.cb2.totalSelected}}
+                            <br/> Is All selected: {{demoCtrl.cb2.selectAll}}
+                        </p>
+                        <div class="form-group">
+                            <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons2, false)" class="btn btn-sm btn-primary">Add New Unselected</button>
+                            <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons2, true)" class="btn btn-sm btn-primary">Add New Selected</button>
+                            <button type="button" ng-click="demoCtrl.cb2.selectAll=!demoCtrl.cb2.selectAll" class="btn btn-sm btn-primary">Toggle 'Select All'</button>
+                            <button type="button" mg-cb-clear="demoCtrl.persons2" class="btn btn-sm btn-primary">Clear All <span class="label label-default label-sm">mg-cb-clear</span></button>
+                            <button type="button" ng-click="hide2=true" class="btn btn-sm btn-danger">Destroy scope</button>
+
+                            <input type="search" ng-model="filterBy2.name" placeholder="Filter to select only few" class="form-control">
+                        </div>
+                        <div class="details-box">
+                            <label><input type="checkbox" ng-if="!hide2" ng-model="demoCtrl.cb2.selectAll" mg-cb-select-all="filteredPersons2" mg-cb-selected-count="demoCtrl.cb2.totalSelected" > <strong>Select All</strong> <span class="label label-default label-sm">mg-cb-select-all</span></label>
+                            <p ng-repeat="person in demoCtrl.persons2 | filter:filterBy2 as filteredPersons2">
+                                <label>
+                <input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}} <span class="label label-default label-sm">mg-cb-member</span> &nbsp;
+                <button ng-click="demoCtrl.remove(demoCtrl.persons2, $index)" title="Remove this person" class="close"><span>&times;</span></button>
+                 <span class="result hidden">{{person}}</span> 
+            </label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <footer>
+            <div class="container">
+                <p class="text-center text-muted">
+                    MIT License &middot; A <a href="http://manikanta.com">Manikanta</a> attempt
+                </p>
+            </div>
+        </footer>
+
+        <a href="https://github.com/manikantag/angular1-select-all" class="github-corner" aria-label="View source on Github">
+            <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+                <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+                <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+                <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+            </svg>
+        </a>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+        <script src="docs/js/ng-stats.min.js"></script>
+        <script src="angular1-select-all.min.js"></script>
+        <script src="docs/js/app.js"></script>
+    </div>
+</body>
+
+</html>
