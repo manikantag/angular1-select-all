@@ -14,7 +14,7 @@
 
     <div class="container">
         <div class="jumbotron text-center">
-            <h1>mg-select-all</h1>
+            <h1>mg-cb-select-all</h1>
             <p class="small">Set of AngularJS 1.x directives for 'Select All' checkbox solution.
                 <span class="small text-muted">All your checkbox belong to me!</span>
             </p>
@@ -31,7 +31,8 @@
             <div class="col-sm-12" id="why">
                 <h4>But why❓</h4>
                 <p>I've written the similar code several times and each time I ended up with better solution. But all those times I've used enough watchers (yeah, <code>$scope.$watch(...)</code>). And once the dataset grows, all those watchers made the page slugish. Besides, I wanted to see if we can leverage the <code>ng-model</code> controller to do all the logic. I wanted a dataset size agnostic solution and here is my such a trail 🚀</p>
-                <p><em>I've added <a href="https://kentcdodds.github.io/ng-stats/">ng-stats</a> widget to this page, so that I can keep an eye on digest cycles & their length </em></p>
+                <p><em>I've added <a href="https://kentcdodds.github.io/ng-stats/">ng-stats</a> widget to this page, so that I can keep an eye on digest cycles & their length. All those watchers count <em>(except 10)</em> you see in the widget are for ng-model.</em>
+                </p>
             </div>
         </div>
         <hr/>
@@ -105,7 +106,7 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                     <pre class="example-code" ng-non-bindable><span style="color:#7a7a7a">&lt;<span style="color:#016cff">div</span> <span style="color:#963dff"><strong class="hightlight">mg-cb-group</strong></span>></span>
     <span style="color:#7a7a7a">&lt;<span style="color:#016cff">div</span>></span>
         Selected count: {{ctrl.totalSelected}}<span style="color:#7a7a7a">&lt;<span style="color:#016cff">br</span>/></span> 
-        Is All selected: {{ctrl.selectAll}}
+        Is All selected: {{ctrl.selectAll}}<span style="color:#7a7a7a">&lt;<span style="color:#016cff">br</span>/></span>
         <span style="color:#7a7a7a">&lt;<span style="color:#016cff">button</span> <span style="color:#963dff">type</span>=<span style="color:#666">"button"</span> <span style="color:#963dff"><strong class="hightlight">mg-cb-clear</strong></span>=<span style="color:#666">"ctrl.persons"</span>></span>Clear All<span style="color:#7a7a7a">&lt;/<span style="color:#016cff">button</span>></span>
     <span style="color:#7a7a7a">&lt;/<span style="color:#016cff">div</span>></span>
     <span style="color:#7a7a7a">&lt;<span style="color:#016cff">div</span>></span>
@@ -222,7 +223,7 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
         <footer>
             <div class="container">
                 <p class="text-center text-muted">
-                    MIT License &middot; A <a href="http://manikanta.com">Manikanta</a> attempt
+                    MIT License &middot; A <a href="http://manikanta.com">Manikanta G</a> attempt
                 </p>
             </div>
         </footer>
