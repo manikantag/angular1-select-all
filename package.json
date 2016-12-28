@@ -1,0 +1,28 @@
+{
+  "name": "angular1-select-all",
+  "version": "1.0.2",
+  "description": "Set of AngularJS 1.x directives for 'Select All' checkbox solution",
+  "main": "angular1-select-all.min.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manikantag/angular1-select-all.git"
+  },
+  "keywords": [
+    "angularjs",
+    "angularjs1",
+    "checkbox",
+    "selectall"
+  ],
+  "author": "Manikanta Gade",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/manikantag/angular1-select-all/issues"
+  },
+  "homepage": "https://github.com/manikantag/angular1-select-all#readme"
+}

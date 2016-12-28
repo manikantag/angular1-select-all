@@ -1,6 +1,6 @@
 /**@preserve
  * angular1-select-all module.
- * @version 1.0.1
+ * @version 1.0.2
  * @link https://manikantag/github.io/angular1-select-all
  * @author Manikanta G
  * @license MIT License, http://www.opensource.org/licenses/MIT
