@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html ng-app="plunker">
+
+<head>
+	<meta charset="utf-8" />
+	<title>AngularJS Plunker</title>
+	<script>
+    document.write('<base href="' + document.location + '" />');
+</script>
+	<script data-require="angular.js@1.4.x" src="angular.js" data-semver="1.4.9"></script>
+</head>
+
+<body ng-controller="MainCtrl">
+
+	<button type="button" ng-click="hide=true">Destroy scope</button>
+	<button type="button" ng-click="cb.selectAll=!cb.selectAll">Toggle 'Select All'</button><br/><br/>
+
+	<label><input type="checkbox" ng-if="!hide" ng-model="cb.selectAll" cb-group="persons" cb-group-selected="cb.totalSelected" > Select All</label>
+	<!-- <label><input type="checkbox" ng-if="!hide" ng-model="cb.selectAll" cb-group cb-group-members="persons" cb-group-selected="cb.totalSelected" > Select All</label> -->
+	<br/>
+	<p ng-repeat="person in persons">
+		<label>
+      <input type="checkbox" ng-model="person.__selected" > {{person.name}}
+  </label>
+	</p>
+	<br/>
+	<br/> Selected count: {{cb.totalSelected}}
+	<br/> Is All selected: {{cb.selectAll}}
+	<br/> =={{persons | json}}==
+	<br/>
+
+
+	<script>
+var app = angular.module('plunker', []);
+
+app
+    .directive('cbGroup', function () {
+        return {
+            scope: {
+                cbGroup: '=',
+                cbGroupSelected: '='
+            },
+            restrict: 'AE',
+            require: [ 'ngModel' ],
+            link: function (scope, element, attr, controllers) {
+                var ngModel = controllers[ 0 ],
+                    unwatchMembers;
+
+                // Returns currently selected member checkbox count.
+                function getSelectedCount() {
+                    var i,
+                        membersCnt = scope.cbGroup.length,
+                        count = 0;
+
+                    for (i = 0; i < membersCnt; i++) {
+                        if (scope.cbGroup[ i ].__selected) {
+                            count++;
+                        }
+                    }
+
+                    return count;
+                }
+
+                function cacscadeSelectAllToAllChecboxes() {
+                    var i,
+                        membersCnt = scope.cbGroup.length,
+                        isSelectedAll = ngModel.$modelValue;
+
+                    for (i = 0; i < membersCnt; i++) {
+                        scope.cbGroup[ i ].__selected = isSelectedAll;
+                    }
+                }
+
+                // Watch all member checkboxes to check 'Select All' checkbox or not.
+                function watchMembers() {
+                    unwatchMembers = scope.$watch('cbGroup', function (newVal, oldVal) {
+                        scope.cbGroupSelected = getSelectedCount();
+                        ngModel.$setViewValue(scope.cbGroupSelected === scope.cbGroup.length);
+                        ngModel.$render();
+
+                        // https://github.com/angular/angular.js/issues/834
+                        unwatchModel && unwatchModel();
+                        watchModel();
+                    }, true);
+                }
+                watchMembers();
+
+                function watchModel() {
+                    unwatchModel = scope.$watch(function () {
+                        return ngModel.$modelValue;
+                    }, function (newVal, oldVal) {
+                        if (newVal !== oldVal) {
+                            cacscadeSelectAllToAllChecboxes();
+                            unwatchMembers();
+                            watchMembers();
+                        }
+                    }, true);
+                }
+                watchModel();
+
+
+
+                // Un-watch the members chexkbox collection on scope $destroy.
+                scope.$on("$destroy", function () {
+                    if (unwatchMembers) {
+                        unwatchMembers();
+                    }
+                    if (unwatchModel) {
+                        unwatchModel();
+                    }
+                });
+
+            }
+        };
+    })
+    ;
+
+
+
+app.controller('MainCtrl', function ($scope) {
+    $scope.cb = {
+        selectAll: false
+    };
+    $scope.persons = [ {
+        name: 'Test1',
+        __selected: true
+    }, {
+        name: 'Test2'
+    }, {
+        name: 'Test3',
+        __selected: true
+    }, {
+        name: 'Test4'
+    }, {
+        name: 'Test5'
+    }, ]
+});
+</script>
+</body>
+
+</html>

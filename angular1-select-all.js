@@ -1,6 +1,6 @@
 /**@preserve
  * angular1-select-all module.
- * @version 1.0.0
+ * @version 1.0.1
  * @link https://manikantag/github.io/angular1-select-all
  * @author Manikanta G
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -47,9 +47,11 @@
          * <code>mg-cb-select-all</code> and all <code>mg-cb-member</code> directives.
          * @scope
          */
-        .directive('mgCbGroup', function() {
+        .directive('mgCbGroup', [ 'mgCbSelectAllConfig', function(mgCbSelectAllConfig) {
             return {
-                scope: {},
+                scope: {
+                    mgCbGroup: '='
+                },
                 restrict: 'AE',
                 controller: ['$scope', function($scope) {
                     var callbackFn;
@@ -64,11 +66,14 @@
                         },
                         subscribe: function(cbFn) {
                             callbackFn = cbFn;
+                        },
+                        getMemberModelKey: function() {
+                            return $scope.mgCbGroup && $scope.mgCbGroup.memberModelKey || mgCbSelectAllConfig.memberModelKey || '__selected';
                         }
                     };
                 }]
             };
-        })
+        }])
 
 
         /**
@@ -84,9 +89,7 @@
          * - {Array|Object} mgCbSelectAll Array or Object which is used for all member checkboxes.
          * - {String} mgCbSelectedCount Scope property which will be updated with selected member checkbox count.
          */
-        .directive('mgCbSelectAll', ['$timeout', 'mgCbSelectAllConfig', function($timeout, mgCbSelectAllConfig) {
-            var memberModelKey = mgCbSelectAllConfig.memberModelKey || '__selected';
-
+        .directive('mgCbSelectAll', ['$timeout', function($timeout) {
             return {
                 scope: {
                     mgCbSelectAll: '=', // Array or Object used in ng-repeat for all member checkboxes.
@@ -100,6 +103,8 @@
                     var ngModelCtrl = controllers[0],
                         mgCbGroupCtrl = controllers[1],
                         init = true;
+
+                    var memberModelKey = mgCbGroupCtrl.getMemberModelKey();
 
                     console.debug("mgCbSelectAll: Using '%s' as memberModelKey", memberModelKey);
 
@@ -262,9 +267,7 @@
          * @scope
          * - {Array|Object} mgCbClear Array or Object which is used for all member checkboxes.
          */
-        .directive('mgCbClear', ['mgCbSelectAllConfig', function(mgCbSelectAllConfig) {
-            var memberModelKey = mgCbSelectAllConfig.memberModelKey || '__selected';
-
+        .directive('mgCbClear', [ function() {
             return {
                 scope: {
                     mgCbMembers: '=mgCbClear' // Array or Object used in ng-repeat for all member checkboxes.
@@ -273,6 +276,8 @@
                 require: ['^mgCbGroup'],
                 link: function(scope, element, attr, controllers) {
                     var mgCbGroupCtrl = controllers[0];
+
+                    var memberModelKey = mgCbGroupCtrl.getMemberModelKey();
 
                     if (!scope.mgCbMembers) {
                         console.warn('mgCbClear: mg-cb-members collection is not passed. Not initialising the directive.');

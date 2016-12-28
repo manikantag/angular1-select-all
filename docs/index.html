@@ -73,6 +73,11 @@
                         <li><code>mg-cb-group</code> directive
                             <p>Acts like a container directive. Use this on the parent element of all the other directives. Basically, all the other 3 directives requires this directives controller.
                             </p>
+                            <p>Options object: <code>{memberModelKey: 'xxx'}</code>
+                                <ul>
+                                    <li><strong>memberModelKey</strong>: To customise the member model key for just this instance. Use 'mgCbSelectAllConfig' to configure for whole module.</li>
+                                </ul>
+                            </p>
                         </li>
                         <li><code>mg-cb-select-all</code> directive
                             <p>Core directive where all the work is done. Use this on the 'Select All' checkbox, along with
@@ -91,7 +96,7 @@
                             </p>
                         </li>
                         <li><code>mgCbSelectAllConfig</code> value service
-                            <p>Useful to configure the scope property of each checkbox model. Default is <code>'__selected'</code>. Customising it is simple.
+                            <p>Useful to configure the module wide scope property of each checkbox model. Default is <code>'__selected'</code>. Customising it is simple.
                                 <pre>
 angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig', { memberModelKey: '_checked' })</pre>
                             </p>
@@ -103,7 +108,7 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                     <h5>Example code <small>(Play with this <a href="https://plnkr.co/edit/oJojoPBVmxGROO43QteF?p=preview" target="_blank">Plunker</a> to learn better)</small></h5>
 
                     <!-- Syntax highlithing by http://markup.su/highlighter/, Style: Active4D -->
-                    <pre class="example-code" ng-non-bindable><span style="color:#7a7a7a">&lt;<span style="color:#016cff">div</span> <span style="color:#963dff"><strong class="hightlight">mg-cb-group</strong></span>></span>
+                    <pre class="example-code" ng-non-bindable><span style="color:#7a7a7a">&lt;<span style="color:#016cff">div</span> <span style="color:#963dff"><strong class="hightlight">mg-cb-group</strong></span>=<span style="color:#666">"{memberModelKey: '__selected'}"</span>></span>
     <span style="color:#7a7a7a">&lt;<span style="color:#016cff">div</span>></span>
         Selected count: {{ctrl.totalSelected}}<span style="color:#7a7a7a">&lt;<span style="color:#016cff">br</span>/></span> 
         Is All selected: {{ctrl.selectAll}}<span style="color:#7a7a7a">&lt;<span style="color:#016cff">br</span>/></span>
@@ -145,7 +150,7 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                 </p>
 
                 <p class="notes-small">🙋 <em>Seriously? 4+1? Can't this be done with just 1 directive?<br/>Yeah, previously I've one such directive but
-                    uses so many watchers. And if you know a better way with 1 directive and still with few watchers, please
+                    uses so many watchers (you can see those in 'docs/other_solutions' directory). And if you know a better way with 1 directive and still with few watchers, please
                     open a issue. I m interested all the way!</em></p>
             </div>
         </div>
@@ -156,7 +161,7 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                 <small><em>Note: Directives usage is marked like <span class="label label-default">this</span></em></small>
 
                 <div class="row">
-                    <div mg-cb-group class="col-md-6">
+                <div mg-cb-group="{memberModelKey: '__selected'}" class="col-md-6">
                         <div class="hr-line">Simple example</div>
                         <span class="label label-default label-sm">mg-cb-group</span>
                         <p class="result">
@@ -176,10 +181,10 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                             <label><input type="checkbox" ng-if="!hide1" ng-model="demoCtrl.cb1.selectAll" mg-cb-select-all="filteredPersons1" mg-cb-selected-count="demoCtrl.cb1.totalSelected" > <strong>Select All</strong> <span class="label label-default label-sm">mg-cb-select-all</span></label>
                             <p ng-repeat="person in demoCtrl.persons1 | filter:filterBy1 as filteredPersons1">
                                 <label>
-                <input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}} <span class="label label-default label-sm">mg-cb-member</span> &nbsp;
-                <button ng-click="demoCtrl.remove(demoCtrl.persons1, $index)" title="Remove this person" class="close"><span>&times;</span></button>
-                 <span class="result hidden">{{person}}</span> 
-            </label>
+                                    <input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}} <span class="label label-default label-sm">mg-cb-member</span> &nbsp;
+                                    <button ng-click="demoCtrl.remove(demoCtrl.persons1, $index)" title="Remove this person" class="close"><span>&times;</span></button>
+                                    <span class="result hidden">{{person}}</span> 
+                                </label>
                             </p>
                         </div>
                     </div>
@@ -187,7 +192,7 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                     </div>
 
                     <div mg-cb-group class="col-md-6">
-                        <div class="hr-line">Big dataset example (inspect page source to know how big!)</div>
+                        <div class="hr-line">Big dataset example <em>(inspect page source to know how big!)</em></div>
                         <span class="label label-default label-sm">mg-cb-group</span>
                         <p class="result">
                             Selected count: {{demoCtrl.cb2.totalSelected}}
@@ -206,10 +211,10 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                             <label><input type="checkbox" ng-if="!hide2" ng-model="demoCtrl.cb2.selectAll" mg-cb-select-all="filteredPersons2" mg-cb-selected-count="demoCtrl.cb2.totalSelected" > <strong>Select All</strong> <span class="label label-default label-sm">mg-cb-select-all</span></label>
                             <p ng-repeat="person in demoCtrl.persons2 | filter:filterBy2 as filteredPersons2">
                                 <label>
-                <input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}} <span class="label label-default label-sm">mg-cb-member</span> &nbsp;
-                <button ng-click="demoCtrl.remove(demoCtrl.persons2, $index)" title="Remove this person" class="close"><span>&times;</span></button>
-                 <span class="result hidden">{{person}}</span> 
-            </label>
+                                    <input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}} <span class="label label-default label-sm">mg-cb-member</span> &nbsp;
+                                    <button ng-click="demoCtrl.remove(demoCtrl.persons2, $index)" title="Remove this person" class="close"><span>&times;</span></button>
+                                    <span class="result hidden">{{person}}</span> 
+                                </label>
                             </p>
                         </div>
                     </div>
@@ -217,6 +222,7 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                     </div>
 
                 </div>
+
             </div>
         </div>
         <hr/>
@@ -238,7 +244,7 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
 
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
         <script src="js/ng-stats.min.js"></script>
-        <!-- <script src="../angular1-select-all.min.js"></script> -->
+        <!-- <script src="../angular1-select-all.js"></script> -->
         <script src="https://rawgit.com/manikantag/angular1-select-all/master/angular1-select-all.js"></script>
         <script src="js/app.js"></script>
     </div>
