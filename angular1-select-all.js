@@ -61,6 +61,11 @@
                     });
 
                     return {
+                        getMemberFilterFn: function () {
+                            if ($scope.mgCbGroup && $scope.mgCbGroup.memberFilterFn) {
+                                return $scope.mgCbGroup.memberFilterFn;
+                            }
+                        },
                         notify: function(memberElement, memberScope) {
                             callbackFn && callbackFn(memberElement, memberScope);
                         },
@@ -106,11 +111,13 @@
 
                     var memberModelKey = mgCbGroupCtrl.getMemberModelKey();
 
+                    var _memberFilterFunction = mgCbGroupCtrl.getMemberFilterFn();
+
                     console.debug("mgCbSelectAll: Using '%s' as memberModelKey", memberModelKey);
 
                     // Set the selected checkbox count initially.
                     $timeout(function() {
-                        scope.mgCbSelectedCount = getSelectedCount();
+                        scope.mgCbSelectedCount = getSelectedCount()[0];
                     });
 
                     mgCbGroupCtrl.subscribe(function(memberElement, memberScope) {
@@ -139,6 +146,7 @@
 
                     // Model value is changed (this could be from controller)
                     ngModelCtrl.$formatters.push(function(modelValue) {
+                        var selectedCounts;
 
                         // If this is the first time this $formatter being invoked (which means this directive 
                         // is just initialised), or if this ng-model is 'true' (which Indicates the 'Select All' 
@@ -151,10 +159,12 @@
                             if (angular.isObject(modelValue) && modelValue.bymgCbMember) {
                                 console.debug('mgCbSelectAll: $formatters(): model value changed to %s by mg-cb-member/mg-cb-clear directive --> re-calculating selected count', modelValue);
 
-                                scope.mgCbSelectedCount = getSelectedCount();
+                                selectedCounts = getSelectedCount();
+
+                                scope.mgCbSelectedCount = selectedCounts[0];
 
                                 // 'Select All' is checked when the checked count is same as the total members count.
-                                modelValue = scope.mgCbSelectAll.length ? scope.mgCbSelectedCount === scope.mgCbSelectAll.length : false;
+                                modelValue = scope.mgCbSelectAll.length && scope.mgCbSelectedCount === scope.mgCbSelectAll.length - selectedCounts[1];
 
                                 // Reset the mgCbSelectAll ng-model value to boolean from Object.
                                 // http://stackoverflow.com/a/31827383/340290
@@ -189,10 +199,16 @@
                     // Checks/unchecks all the member checkboxes & updates the selected count.
                     function cacscadeSelectAllToAllChecboxes(isSelectedAll) {
                         var i,
-                            membersCnt = scope.mgCbSelectAll.length;
+                            membersCnt = 0;
 
-                        for (i = 0; i < membersCnt; i++) {
+                        for (i = 0; i < scope.mgCbSelectAll.length; i++) {
+                            if (_memberFilterFunction) {
+                                if (!_memberFilterFunction(scope.mgCbSelectAll[i], i)) {
+                                    continue;
+                                }
+                            }
                             scope.mgCbSelectAll[i][memberModelKey] = isSelectedAll;
+                            membersCnt++;
                         }
 
                         scope.mgCbSelectedCount = isSelectedAll ? membersCnt : 0;
@@ -202,15 +218,23 @@
                     function getSelectedCount() {
                         var i,
                             membersCnt = scope.mgCbSelectAll.length,
-                            count = 0;
+                            selectedMembersCount = 0,
+                            filteredOutMembersCount = 0;
 
                         for (i = 0; i < membersCnt; i++) {
+                            if (_memberFilterFunction) {
+                                if (!_memberFilterFunction(scope.mgCbSelectAll[i], i)) {
+                                    filteredOutMembersCount ++;
+                                    continue;
+                                }
+                            }
+
                             if (scope.mgCbSelectAll[i][memberModelKey]) {
-                                count++;
+                                selectedMembersCount ++;
                             }
                         }
 
-                        return count;
+                        return [selectedMembersCount, filteredOutMembersCount];
                     }
                 }
             };
@@ -279,6 +303,8 @@
 
                     var memberModelKey = mgCbGroupCtrl.getMemberModelKey();
 
+                    var _memberFilterFunction = mgCbGroupCtrl.getMemberFilterFn();
+
                     if (!scope.mgCbMembers) {
                         console.warn('mgCbClear: mg-cb-members collection is not passed. Not initialising the directive.');
                         return;
@@ -291,6 +317,12 @@
 
                         scope.$apply(function() {
                             for (i = 0; i < membersCnt; i++) {
+                                if (_memberFilterFunction) {
+                                    if (!_memberFilterFunction(mgCbMembers[i], i)) {
+                                        continue;
+                                    }
+                                }
+                                
                                 mgCbMembers[i][memberModelKey] && (mgCbMembers[i][memberModelKey] = false);
                             }
                         });

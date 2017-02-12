@@ -73,9 +73,10 @@
                         <li><code>mg-cb-group</code> directive
                             <p>Acts like a container directive. Use this on the parent element of all the other directives. Basically, all the other 3 directives requires this directives controller.
                             </p>
-                            <p>Options object: <code>{memberModelKey: 'xxx'}</code>
+                            <p>Options object: <code>{memberModelKey: 'xxx', memberFilterFn: someFilterFn}</code>
                                 <ul>
                                     <li><strong>memberModelKey</strong>: To customise the member model key for just this instance. Use 'mgCbSelectAllConfig' to configure for whole module.</li>
+                                    <li><strong>memberFilterFn</strong>: To filter the member checkboxes based on some condition. Ex: to ignore all disabled checkboxes.</li>
                                 </ul>
                             </p>
                         </li>
@@ -161,36 +162,69 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                 <small><em>Note: Directives usage is marked like <span class="label label-default">this</span></em></small>
 
                 <div class="row">
-                <div mg-cb-group="{memberModelKey: '__selected'}" class="col-md-6">
-                        <div class="hr-line">Simple example</div>
-                        <span class="label label-default label-sm">mg-cb-group</span>
-                        <p class="result">
-                            Selected count: {{demoCtrl.cb1.totalSelected}}
-                            <br/> Is All selected: {{demoCtrl.cb1.selectAll}}
-                        </p>
-                        <div class="form-group">
-                            <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons1, false)" class="btn btn-sm btn-primary">Add New Unselected</button>
-                            <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons1, true)" class="btn btn-sm btn-primary">Add New Selected</button>
-                            <button type="button" ng-click="demoCtrl.cb1.selectAll=!demoCtrl.cb1.selectAll" class="btn btn-sm btn-primary">Toggle 'Select All'</button>
-                            <button type="button" mg-cb-clear="demoCtrl.persons1" class="btn btn-sm btn-primary">Clear All <span class="label label-default label-sm">mg-cb-clear</span></button>
-                            <button type="button" ng-click="hide1=true" class="btn btn-sm btn-danger">Destroy scope</button>
-
-                            <input type="search" ng-model="filterBy1.name" placeholder="Filter to select only few" class="form-control">
-                        </div>
-                        <div class="details-box">
-                            <label><input type="checkbox" ng-if="!hide1" ng-model="demoCtrl.cb1.selectAll" mg-cb-select-all="filteredPersons1" mg-cb-selected-count="demoCtrl.cb1.totalSelected" > <strong>Select All</strong> <span class="label label-default label-sm">mg-cb-select-all</span></label>
-                            <p ng-repeat="person in demoCtrl.persons1 | filter:filterBy1 as filteredPersons1">
-                                <label>
-                                    <input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}} <span class="label label-default label-sm">mg-cb-member</span> &nbsp;
-                                    <button ng-click="demoCtrl.remove(demoCtrl.persons1, $index)" title="Remove this person" class="close"><span>&times;</span></button>
-                                    <span class="result hidden">{{person}}</span> 
-                                </label>
-                            </p>
-                        </div>
-                    </div>
                     <div class="col-md-6">
-                    </div>
+                        <div mg-cb-group="{memberModelKey: '__selected'}">
+                            <div class="hr-line">Simple example</div>
+                            <span class="label label-default label-sm">mg-cb-group</span>
+                            <p class="result">
+                                Selected count: {{demoCtrl.cb1.totalSelected}}
+                                <br/> Is All selected: {{demoCtrl.cb1.selectAll}}
+                            </p>
+                            <div class="form-group">
+                                <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons1, false)" class="btn btn-sm btn-primary">Add New Unselected</button>
+                                <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons1, true)" class="btn btn-sm btn-primary">Add New Selected</button>
+                                <button type="button" ng-click="demoCtrl.cb1.selectAll=!demoCtrl.cb1.selectAll" class="btn btn-sm btn-primary">Toggle 'Select All'</button>
+                                <button type="button" mg-cb-clear="demoCtrl.persons1" class="btn btn-sm btn-primary">Clear All <span class="label label-default label-sm">mg-cb-clear</span></button>
+                                <button type="button" ng-click="hide1=true" class="btn btn-sm btn-danger">Destroy scope</button>
 
+                                <input type="search" ng-model="filterBy1.name" placeholder="Filter to select only few" class="form-control">
+                            </div>
+                            <div class="details-box">
+                                <label><input type="checkbox" ng-if="!hide1" ng-model="demoCtrl.cb1.selectAll" 
+                                    mg-cb-select-all="filteredPersons1" 
+                                    mg-cb-selected-count="demoCtrl.cb1.totalSelected" > <strong>Select All</strong> <span class="label label-default label-sm">mg-cb-select-all</span></label>
+                                <p ng-repeat="person in demoCtrl.persons1 | filter:filterBy1 as filteredPersons1">
+                                    <label>
+                                        <input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}} <span class="label label-default label-sm">mg-cb-member</span> &nbsp;
+                                        <button ng-click="demoCtrl.remove(demoCtrl.persons1, $index)" title="Remove this person" class="close"><span>&times;</span></button>
+                                        <span class="result hidden">{{person}}</span> 
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div mg-cb-group="{memberModelKey: '__selected', memberFilterFn: demoCtrl.cb3MemberFilterFn}">
+                            <div class="hr-line">Example with <code>memberFilterFn</code></div>
+                            <p>This example will only select odd numbered checkboxes</p>
+                            <span class="label label-default label-sm">mg-cb-group</span>
+                            <p class="result">
+                                Selected count: {{demoCtrl.cb3.totalSelected}}
+                                <br/> Is All selected: {{demoCtrl.cb3.selectAll}}
+                            </p>
+                            <div class="form-group">
+                                <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons3, false)" class="btn btn-sm btn-primary">Add New Unselected</button>
+                                <button type="button" ng-click="demoCtrl.addNew(demoCtrl.persons3, true)" class="btn btn-sm btn-primary">Add New Selected</button>
+                                <button type="button" ng-click="demoCtrl.cb3.selectAll=!demoCtrl.cb3.selectAll" class="btn btn-sm btn-primary">Toggle 'Select All'</button>
+                                <button type="button" mg-cb-clear="demoCtrl.persons3" class="btn btn-sm btn-primary">Clear All <span class="label label-default label-sm">mg-cb-clear</span></button>
+                                <button type="button" ng-click="hide1=true" class="btn btn-sm btn-danger">Destroy scope</button>
+
+                                <input type="search" ng-model="filterBy3.name" placeholder="Filter to select only few" class="form-control">
+                            </div>
+                            <div class="details-box">
+                                <label><input type="checkbox" ng-if="!hide1" ng-model="demoCtrl.cb3.selectAll" 
+                                    mg-cb-select-all="filteredPersons3" 
+                                    mg-cb-selected-count="demoCtrl.cb3.totalSelected" > <strong>Select All</strong> <span class="label label-default label-sm">mg-cb-select-all</span></label>
+                                <p ng-repeat="person in demoCtrl.persons3 | filter:filterBy3 as filteredPersons3">
+                                    <label>
+                                        <input type="checkbox" ng-model="person.__selected" mg-cb-member> {{::person.name}} <span class="label label-default label-sm">mg-cb-member</span> &nbsp;
+                                        <button ng-click="demoCtrl.remove(demoCtrl.persons3, $index)" title="Remove this person" class="close"><span>&times;</span></button>
+                                        <span class="result hidden">{{person}}</span> 
+                                    </label>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div mg-cb-group class="col-md-6">
                         <div class="hr-line">Big dataset example <em>(inspect page source to know how big!)</em></div>
                         <span class="label label-default label-sm">mg-cb-group</span>
@@ -218,9 +252,6 @@ angular.module('AppModule', ['angular1-select-all']).value('mgCbSelectAllConfig'
                             </p>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                    </div>
-
                 </div>
 
             </div>
