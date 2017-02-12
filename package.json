@@ -1,6 +1,6 @@
 {
   "name": "angular1-select-all",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Set of AngularJS 1.x directives for 'Select All' checkbox solution",
   "main": "angular1-select-all.min.js",
   "directories": {
